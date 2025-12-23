@@ -1,0 +1,4 @@
+<button [matButton]="appearance" [color]="color" [disabled]="disabled" [type]="type"
+    [class]="'ui-button ' + buttonClass" (click)="handleClick($event)">
+    <ng-content></ng-content>
+</button>

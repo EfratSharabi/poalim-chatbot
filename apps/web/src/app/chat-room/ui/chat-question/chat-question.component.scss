@@ -1,0 +1,41 @@
+.chat-question-panel {
+    background: white;
+    margin: 1rem 0;
+
+    .mat-expansion-panel-header {
+        min-height: max-content;
+        padding: 0;
+
+        .chat-question-header {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        .chat-question-answers-count {
+            display: flex;
+            gap: 0.3rem;
+            padding-top: 1rem;
+            align-items: center;
+        }
+    }
+
+    ::ng-deep .mat-expansion-panel-body {
+        padding: 0;
+    }
+
+    .chat-question-title {
+        margin: 0;
+        margin-bottom: 1rem;
+        font-weight: 500;
+    }
+
+    .chat-question-content {
+        display: flex;
+        padding-bottom: 1rem;
+        white-space: pre-wrap;
+    }
+
+
+}

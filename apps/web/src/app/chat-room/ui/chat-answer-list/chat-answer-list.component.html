@@ -1,0 +1,9 @@
+<div class="chat-answer-list">
+    @if(answers().length === 0) {
+    <app-chat-answer-empty></app-chat-answer-empty>
+    } @else {
+    @for (answer of answers(); track answer.id) {
+    <app-chat-answer [answer]="answer"></app-chat-answer>
+    }
+    }
+</div>

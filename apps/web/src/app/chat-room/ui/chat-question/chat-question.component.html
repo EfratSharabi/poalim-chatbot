@@ -1,0 +1,32 @@
+<!-- <app-card class="chat-question-card">
+    <app-chat-message [message]="question">
+        <h2 class="chat-question-title">{{question().title}}</h2>
+        <span class="chat-question-content" [innerHTML]="question().content"></span>
+    </app-chat-message>
+    <div class="chat-question-answers">
+        <app-chat-answer-list [answers]="question().answers"></app-chat-answer-list>
+        <app-chat-answer-composer [questionId]="question().id"></app-chat-answer-composer>
+    </div>
+</app-card> -->
+
+<mat-expansion-panel class="chat-question-panel" hideToggle>
+    <mat-expansion-panel-header>
+        <div class="chat-question-header">
+            <app-chat-message [message]="question">
+                <h2 class="chat-question-title">{{question().title}}</h2>
+                <span class="chat-question-content" [innerHTML]="question().content"></span>
+            </app-chat-message>
+            <div class="chat-question-answers-count">
+                <fa-icon [icon]="answersCountIcon"></fa-icon>
+                <span>{{question().answers.length || 0}}</span>
+            </div>
+        </div>
+    </mat-expansion-panel-header>
+    <ng-template matExpansionPanelContent>
+        <div class="chat-question-answers">
+            <app-chat-answer-list [answers]="question().answers"></app-chat-answer-list>
+            <app-chat-answer-composer [questionId]="question().id"></app-chat-answer-composer>
+        </div>
+    </ng-template>
+
+</mat-expansion-panel>

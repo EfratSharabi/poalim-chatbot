@@ -1,0 +1,12 @@
+<div class="chat-message">
+    <div class="chat-message-header">
+        <span class="chat-message-sender">
+            <fa-icon class="chat-sender-icon" [icon]="senderIcon()"></fa-icon>
+            {{message().senderId | messageSenderFormat }}
+        </span>
+        <span class="chat-message-timestamp">{{message().timestamp | messageTimestampFormat }}</span>
+    </div>
+    <div class="chat-message-content">
+        <ng-content></ng-content>
+    </div>
+</div>

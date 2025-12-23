@@ -1,0 +1,30 @@
+@use '../../../../../variables' as variables;
+
+:host {
+    flex: 1;
+}
+
+.chat-message {
+    display: flex;
+    flex-direction: column;
+
+    .chat-message-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: smaller;
+        font-weight: lighter;
+        padding: .5rem 0;
+
+        .chat-message-sender {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: variables.$V150;
+        }
+    }
+
+    .chat-message-content {
+        padding: 0 1.8rem;
+    }
+
+}

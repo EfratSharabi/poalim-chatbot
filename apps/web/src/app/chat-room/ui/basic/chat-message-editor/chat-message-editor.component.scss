@@ -1,0 +1,17 @@
+.chat-message-editor {
+  .editor {
+    height:56px;
+  }
+
+  .editor-footer {
+    display: flex;
+    justify-content: space-between;
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+}

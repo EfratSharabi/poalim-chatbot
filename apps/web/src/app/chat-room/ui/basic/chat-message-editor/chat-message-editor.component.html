@@ -1,0 +1,20 @@
+<div class="chat-message-editor">
+
+    <ngx-editor class="editor" [editor]="editor" [formControl]="control" [placeholder]="placeholder()">
+    </ngx-editor>
+
+    <div class="editor-footer">
+        <ngx-editor-menu [editor]="editor"></ngx-editor-menu>
+
+        <div class="actions">
+            <app-button class="cancel-btn" (clicked)="onCancel()">
+                {{'chat.cancel' | translate }}
+            </app-button>
+            
+            <app-button appearance="filled" class="send-btn" [disabled]="disableSubmitButton()" (clicked)="onSend()" >
+                {{'chat.send' | translate }}
+            </app-button>
+        </div>
+    </div>
+
+</div>

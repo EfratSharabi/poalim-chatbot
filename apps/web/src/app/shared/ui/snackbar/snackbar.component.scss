@@ -1,0 +1,47 @@
+.notification {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:.5rem 0.3rem .5rem 1rem;
+    border-radius: 4px;
+    color: white;
+
+    &.success {
+        background-color: #4caf50;
+    }
+
+    &.error {
+        background-color: #f44336;
+    }
+
+    &.info {
+        background-color: var(--mat-sys-on-primary-container);
+    }
+
+    &.warning {
+        background-color: #ff9800;
+    }
+
+    .message {
+        flex: 1;
+        margin-right: 1rem;
+        margin-top: 2px;
+    }
+
+    .close-icon-button {
+        .close-icon {
+            font-size: 15px;
+            color: white;
+
+            ::ng-deep svg {
+                width: 15px;
+                height: 15px;
+            }
+        }
+    }
+}
+
+::ng-deep .mat-mdc-snackbar-surface {
+    padding: 0 !important;
+    min-width: auto !important;
+}

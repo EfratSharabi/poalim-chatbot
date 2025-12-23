@@ -1,0 +1,17 @@
+<app-card>
+    <div class="chat-question-composer">
+        @if(!isEditorOpen()) {
+        <app-button class="open-editor-btn" (clicked)="isEditorOpen.set(true)">
+            {{'chat.ask-question' | translate }}
+        </app-button>
+        } @else {
+        <form class="chat-question-form">
+            <app-input [field]="questionForm.title" [placeholder]="'chat.question-title-placeholder' | translate"></app-input>
+
+            <app-chat-message-editor [field]="questionForm.content" [diableSubmit]="questionForm().invalid()"
+                [placeholder]="'chat.question-content-placeholder' | translate" (send)="onSendQuestion()"
+                (cancel)="onCancelQuestion()"></app-chat-message-editor>
+        </form>
+        }
+    </div>
+</app-card>

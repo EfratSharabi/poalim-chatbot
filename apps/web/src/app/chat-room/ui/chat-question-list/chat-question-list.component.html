@@ -1,0 +1,5 @@
+<div class="chat-question-list">
+    @for (question of questions(); track question.id) {
+    <app-chat-question [question]="question"></app-chat-question>
+    }
+</div>

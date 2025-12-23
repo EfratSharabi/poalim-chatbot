@@ -1,9 +1,9 @@
 <div class="chat-answer-composer">
     @if(!isEditorOpen()) {
-    <app-button class="open-editor-btn" (clicked)="onOpenEditor()">
-        {{'chat.write-answer' | translate }}
-    </app-button>
+        <app-button class="open-editor-btn" (clicked)="onOpenEditor()">
+            {{'chat.write-answer' | translate }}
+        </app-button>
     } @else {
-    <app-chat-message-editor [placeholder]="'chat.answer-content-placeholder' | translate" (send)="onSendAnswer($event)" (cancel)="onCancelAnswer()"></app-chat-message-editor>
+        <app-chat-message-editor [placeholder]="'chat.answer-content-placeholder' | translate" (send)="onSendAnswer($event)" (cancel)="onCancelAnswer()"></app-chat-message-editor>
     }
 </div>

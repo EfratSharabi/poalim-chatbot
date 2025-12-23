@@ -55,11 +55,11 @@ export class ChatQuestionComposerComponent {
     this.reset();
   }
 
-  onCancelQuestion() {
+  onCancelQuestion(): void {
     this.reset();
   }
 
-  private reset() {
+  private reset(): void {
     this.isEditorOpen.set(false);
     this.questionModel.set({
       title: '',

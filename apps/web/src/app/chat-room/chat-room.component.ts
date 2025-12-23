@@ -5,7 +5,7 @@ import { ChatQuestionListComponent } from './ui/chat-question-list/chat-question
 
 @Component({
   selector: 'app-chat-room',
-  imports: [ChatQuestionComposerComponent, ChatQuestionListComponent,],
+  imports: [ChatQuestionComposerComponent, ChatQuestionListComponent],
   templateUrl: './chat-room.component.html',
   styleUrl: './chat-room.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

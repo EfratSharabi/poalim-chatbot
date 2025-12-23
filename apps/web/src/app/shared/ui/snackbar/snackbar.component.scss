@@ -11,7 +11,7 @@
     }
 
     &.error {
-        background-color: #f44336;
+        background-color: var(--mat-sys-error);
     }
 
     &.info {

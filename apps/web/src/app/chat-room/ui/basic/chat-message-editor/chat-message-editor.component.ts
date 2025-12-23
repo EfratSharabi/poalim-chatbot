@@ -74,7 +74,7 @@ export class ChatMessageEditorComponent implements FormValueControl<string> {
     this.send.emit(html);
   }
 
-  onCancel() {
+  onCancel(): void {
     this.cancel.emit();
   }
 

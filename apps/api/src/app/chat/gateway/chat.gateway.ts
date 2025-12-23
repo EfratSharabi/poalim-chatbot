@@ -22,22 +22,22 @@ export class ChatGateway
 
   constructor(private readonly chatService: ChatService) { }
 
-  afterInit(server: Server) {
+  afterInit(server: Server): void {
     console.log('WebSocket server initialized');
   }
 
-  handleConnection(client: Socket) {
+  handleConnection(client: Socket): void {
     console.log(`Client connected: ${client.id}`);
     const history = this.chatService.getChatHistory();
     client.emit('chatHistory', history);
   }
 
-  handleDisconnect(client: Socket) {
+  handleDisconnect(client: Socket): void {
     console.log(`Client disconnected: ${client.id}`);
   }
 
   @SubscribeMessage('sendMessage')
-  handleMessage(client: Socket, payload: ChatPayload) {
+  handleMessage(client: Socket, payload: ChatPayload): void {
     console.log(`client sent action: ${payload?.action}`);
     if (!payload?.action) {
       console.warn('Invalid payload:', payload);
@@ -48,7 +48,7 @@ export class ChatGateway
   }
 
   @OnEvent(CHAT_EVENT)
-  handleChatEvent({ event, payload }: { event: ChatEvent; payload: ChatMessage }) {
+  handleChatEvent({ event, payload }: { event: ChatEvent; payload: ChatMessage }): void {
     this.server.emit(event, payload);
   }
 }

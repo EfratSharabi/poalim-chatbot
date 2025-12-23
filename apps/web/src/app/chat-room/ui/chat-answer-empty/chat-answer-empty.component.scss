@@ -4,11 +4,11 @@
     align-items: center;
     justify-content: center;
     padding: 2rem 0;
-    color: rgba(0, 0, 0, 0.54);
+    color: var(--mat-sys-secondary);
 
     .chat-answer-empty-icon {
         font-size: 4rem;
         margin-bottom: 1rem;
+        color: var(--mat-sys-primary);
     }
-
 }

@@ -1,7 +1,7 @@
 <app-card>
     <div class="chat-question-composer">
         @if(!isEditorOpen()) {
-        <app-button class="open-editor-btn" (clicked)="isEditorOpen.set(true)">
+        <app-button appearance="filled" class="open-editor-btn" (clicked)="isEditorOpen.set(true)">
             {{'chat.ask-question' | translate }}
         </app-button>
         } @else {

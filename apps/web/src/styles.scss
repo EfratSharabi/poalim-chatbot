@@ -2,13 +2,21 @@
 
 html {
     height: 100%;
-    @include mat.theme((color: (primary: mat.$magenta-palette,
-                tertiary: mat.$violet-palette,
+    @include mat.theme((color:(
+                primary: mat.$red-palette,
                 theme-type: light,
             ),
-            ba typography: Roboto,
-            density: -2,
+            typography: Roboto,
+            density: -4,
         ));
+}
+
+:root {
+    --mat-sys-primary: #ee171f;
+    --mat-sys-surface-tint: #ee171f;
+    --mat-sys-tertiary: #ee171f;
+    --mat-sys-secondary: #525252;
+    --ngx-editor-placeholder-color: #525252 !important;
 }
 
 html,
@@ -28,4 +36,5 @@ body {
 
 .ng-fa-icon {
     font-size: 20px;
+    color: var(--mat-sys-secondary);
 }

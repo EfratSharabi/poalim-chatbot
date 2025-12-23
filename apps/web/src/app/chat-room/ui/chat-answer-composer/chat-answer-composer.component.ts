@@ -24,7 +24,6 @@ export class ChatAnswerComposerComponent {
 
   onOpenEditor(): void {
     this.isEditorOpen.set(true);
-    this.sendStartAnswer()
   }
 
   onSendAnswer($event: string): void {
@@ -39,24 +38,7 @@ export class ChatAnswerComposerComponent {
     this.isEditorOpen.set(false);
   }
 
-  onCancelAnswer() {
+  onCancelAnswer(): void {
     this.isEditorOpen.set(false);
-    this.sendEndAnswer();
-  }
-  
-  sendStartAnswer() {
-    const answering = {
-      questionId: this.questionId,
-      senderId: this.authenticationService.currentUserId
-    };
-    this.chatActionService.sendStartAnswer(answering);
-  }
-
-  sendEndAnswer() {
-    const answering = {
-      questionId: this.questionId,
-      senderId: this.authenticationService.currentUserId
-    };
-    this.chatActionService.sendEndAnswer(answering);
   }
 }

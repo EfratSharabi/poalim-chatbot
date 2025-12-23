@@ -1,6 +1,6 @@
 .chat-message-editor {
   .editor {
-    height:56px;
+    height: 56px;
   }
 
   .editor-footer {
@@ -12,6 +12,16 @@
       justify-content: flex-end;
       align-items: center;
       gap: 8px;
+    }
+  }
+
+  ::ng-deep .NgxEditor {
+    &:focus-within {
+      border: solid 2px var(--mat-sys-primary);
+    }
+
+    .NgxEditor__Content p {
+      margin: 0;
     }
   }
 }

@@ -3,7 +3,9 @@ import { ChatAction, ChatAnswer, ChatEvent, ChatQuestion } from '@poalim-chatbot
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../../../environments/environment';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ 
+  providedIn: 'root' 
+})
 export class ChatSocketService {
   private socket: Socket;
 
@@ -11,23 +13,23 @@ export class ChatSocketService {
     this.socket = io(environment.apiUrl);
   }
 
-  emit(action: ChatAction, message: any) {
+  emit(action: ChatAction, message: any): void {
     this.socket.emit('sendMessage', { action, message });
   }
 
-  onHistory(cb: (msgs: ChatQuestion[]) => void) {
+  onHistory(cb: (msgs: ChatQuestion[]) => void): void {
     this.socket.on('chatHistory', cb);
   }
 
-  onNewQuestion(cb: (q: ChatQuestion) => void) {
+  onNewQuestion(cb: (q: ChatQuestion) => void): void {
     this.socket.on(ChatEvent.NEW_QUESTION, cb as any);
   }
 
-  onNewAnswer(cb: (a: ChatAnswer) => void) {
+  onNewAnswer(cb: (a: ChatAnswer) => void): void {
     this.socket.on(ChatEvent.NEW_ANSWER, cb as any);
   }
 
-  disconnect() {
+  disconnect(): void {
     this.socket.disconnect();
   }
 }

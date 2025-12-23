@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ 
+    providedIn: 'root' 
+})
 export class AuthenticationService {
 
     users = ['Sara', 'John', 'Alice', 'Bob', 'Eve', 'Charlie', 'David', 'Faythe', 'Grace', 'Heidi'];

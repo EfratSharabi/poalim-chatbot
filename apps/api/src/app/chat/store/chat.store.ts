@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ChatAnswer, ChatQuestion } from '@poalim-chatbot/shared';
+import { BankQAMock } from '../mock/bank-qa.mock';
+import { ChatUtils } from '../../utils/chat-utils';
 
 @Injectable()
 export class ChatStore {
@@ -10,17 +12,15 @@ export class ChatStore {
   // questionId → answers[]
   private answersByQuestion = new Map<string, ChatAnswer[]>();
 
-  // normalizedQuestionText → questionId (quick search)
-  private questionsIndex = new Map<string, string>();
+  // questionId → normalizedQuestion
+  private normalizedQuestions = new Map<string, string>();
 
   constructor() {
-    this.questions.set('1111', { id: '1111', title: 'question 1', content: 'message 1', senderId: 'Efrat', timestamp: Date.now() });
-    this.answersByQuestion.set('1111', [
-      { id: 'a1', questionId: '1111', content: 'answer 1', senderId: 'Yossi', timestamp: Date.now() },
-      { id: 'a2', questionId: '1111', content: 'answer 2', senderId: 'Leah', timestamp: Date.now() }
-    ]);
-    this.questions.set('2222', { id: '2222', title: 'question 2', content: 'message 2', senderId: 'Sara', timestamp: Date.now() });
-    this.questions.set('3333', { id: '3333', title: 'question 3', content: 'message 3', senderId: 'Chana', timestamp: Date.now() });
+    this.initializeFromJson(BankQAMock);
+  }
+
+  getAllQuestions(): Omit<ChatQuestion, 'answers'>[] {
+    return Array.from(this.questions.values());
   }
 
   getAllQuestionsWithAnswers(): ChatQuestion[] {
@@ -41,8 +41,14 @@ export class ChatStore {
     return { ...q, answers };
   }
 
-  addQuestion(q: ChatQuestion) {
-    const { id } = q;
+  getAllNormalizedQuestionsWithAnswers(): { id: string; normalized: string }[] {
+    return Array.from(this.questions.entries())
+      .filter(([id]) => (this.answersByQuestion.get(id)?.length ?? 0) > 0)
+      .map(([id]) => ({ id, normalized: this.normalizedQuestions.get(id) }));
+  }
+
+  addQuestion(q: ChatQuestion): void {
+    const { id, title, content } = q;
     const { answers, ...qWithoutAnswers } = q;
 
     this.questions.set(id, qWithoutAnswers);
@@ -50,12 +56,26 @@ export class ChatStore {
     if (!this.answersByQuestion.has(id)) {
       this.answersByQuestion.set(id, []);
     }
+    this.normalizedQuestions.set(id, ChatUtils.normalize(title + ' ' + content));
   }
 
-  addAnswer(a: ChatAnswer) {
+  addAnswer(a: ChatAnswer): void {
     const list = this.answersByQuestion.get(a.questionId) ?? [];
     list.push(a);
     this.answersByQuestion.set(a.questionId, list);
+  }
+
+  private initializeFromJson(data: ChatQuestion[]) {
+    for (const question of data) {
+      const { id, title, content } = question;
+      const { answers, ...questionWithoutAnswers } = question;
+
+      this.questions.set(id, questionWithoutAnswers);
+
+      this.answersByQuestion.set(id, answers ?? []);
+
+      this.normalizedQuestions.set(id, ChatUtils.normalize(title + ' ' + content));
+    }
   }
 
 }

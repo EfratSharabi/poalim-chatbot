@@ -1,5 +1,4 @@
 export * from './chat-answer.model';
-export * from './chat-answering.model';
 export * from './chat-message.model';
 export * from './chat-question.model';
 export * from './enums';

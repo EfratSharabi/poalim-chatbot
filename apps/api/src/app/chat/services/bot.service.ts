@@ -1,48 +1,64 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { AIClientService } from './AI-client.service ';
+import { PromptBuilderService } from './prompt-builder.service';
+import { QuestionMatcherService } from './question-matcher.service';
+import { ChatStore } from '../store/chat.store';
 import { ChatAnswer, ChatQuestion } from '@poalim-chatbot/shared';
 import { ChatUtils } from '../../utils/chat-utils';
-import { ChatStore } from '../store/chat.store';
-import { BotPersonalityService } from './bot-personality.service';
-import { BotSimilarityService } from './bot-similarity.service';
-
 
 @Injectable()
 export class BotService {
 
-  private readonly botName = 'Poalim Helper';
+  readonly botName = 'Eli from Poalim';
 
   constructor(
-    private readonly store: ChatStore,
-    private readonly similarity: BotSimilarityService,
-    private readonly personality: BotPersonalityService,
-  ) {}
+    private readonly matcher: QuestionMatcherService,
+    private readonly promptBuilder: PromptBuilderService,
+    private readonly AIClient: AIClientService,
+    private readonly chatStore: ChatStore,
+  ) { }
 
-  /**
-   * Generate an answer for the given question if possible.
-   * Strategy: find a similar past question and reuse its first answer, wrapped with personality.
-   */
-  async generateAnswerForQuestion(question: ChatQuestion): Promise<ChatAnswer | null> {
-    const similarId = await this.similarity.findSimilarQuestionId(question);
-    if (!similarId) return null;
+  async generateAnswerForQuestion(question: ChatQuestion): Promise<ChatAnswer> {
+    try {
+      const matched = this.matcher.findBestMatch(question);
 
-    const similar = this.store.getQuestion(similarId);
-    if (!similar) return null;
+      if (!matched) {
+        return this.buildBotAnswer(question.id, this.getFallbackAnswer());
+      }
 
-    const sourceAnswer = (similar.answers && similar.answers[0]) || null;
-    if (!sourceAnswer) return null;
+      const answers = this.chatStore.getQuestion(matched.id).answers;
 
-    const base = sourceAnswer.content;
-    const wrapped = this.personality.wrapAnswer(base, this.botName);
+      if (!answers) {
+        return this.buildBotAnswer(question.id, this.getFallbackAnswer());
+      }
 
-    const botAnswer: ChatAnswer = {
+      const prompt = this.promptBuilder.build({
+        userQuestion: question.content,
+        matchedQuestion: matched,
+        existingAnswers: answers,
+      });
+
+      const answer = await this.AIClient.generate(prompt);
+      return this.buildBotAnswer(question.id, answer);
+    } catch (error) {
+      Logger.log(error);
+      return this.buildBotAnswer(question.id, this.getFallbackAnswer());
+    }
+  }
+
+  private buildBotAnswer(questionId: string, answer: string): ChatAnswer {
+    return {
       id: ChatUtils.generateId(),
-      content: wrapped,
+      content: answer,
       senderId: this.botName,
-      questionId: question.id,
+      questionId: questionId,
       timestamp: Date.now(),
-      isBot: true,
+      isBot: true
     };
+  }
 
-    return botAnswer;
+  private getFallbackAnswer(): string {
+    return `Thanks for your question 😊  
+I couldn’t find a similar question, but a bank representative will be happy to help you soon.`;
   }
 }

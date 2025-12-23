@@ -3,20 +3,12 @@ import { ChatAnswer, ChatQuestion } from '@poalim-chatbot/shared';
 import { NotificationService } from '../../shared/services/notification.service';
 import { ChatSocketService } from './chat-socket.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ 
+  providedIn: 'root' 
+})
 export class ChatStateService {
 
-  questions = signal<ChatQuestion[]>([
-    {
-      id: '1111', title: 'question 1', content: 'message 1', senderId: 'Efrat', timestamp: Date.now(), answers: [
-        { id: 'a1', questionId: '1111', content: 'answer 1', senderId: 'Yossi', timestamp: Date.now() },
-        { id: 'a2', questionId: '1111', content: 'answer 2', senderId: 'Leah', timestamp: Date.now() }
-      ]
-    },
-    { id: '2222', title: 'question 2', content: 'message 2', senderId: 'Sara', timestamp: Date.now(), answers: [] },
-    { id: '3333', title: 'question 3', content: 'message 3', senderId: 'Chana', timestamp: Date.now(), answers: [] },
-
-  ]);
+  questions = signal<ChatQuestion[]>([]);
 
   private questionsById = new Map<string, ChatQuestion>();
   private pendingClientQuestions = new Map<string, Omit<ChatQuestion, 'answers'>>();
@@ -30,7 +22,7 @@ export class ChatStateService {
     this.chatSocketService.onNewAnswer((a) => this.handleServerAnswer(a));
   }
 
-  addTempQuestion(q: Omit<ChatQuestion, 'answers'>) {
+  addTempQuestion(q: Omit<ChatQuestion, 'answers'>): void {
     const tempId = `tmp-${Date.now()}`;
     const tmp: ChatQuestion = { ...(q as ChatQuestion), id: tempId, answers: [] };
     this.questionsById.set(tempId, tmp);
@@ -38,13 +30,13 @@ export class ChatStateService {
     this.syncQuestionsSignal();
   }
 
-  private initHistory(msgs: ChatQuestion[]) {
+  private initHistory(msgs: ChatQuestion[]): void {
     this.questionsById.clear();
     msgs.forEach((q) => this.questionsById.set(q.id, q));
     this.syncQuestionsSignal();
   }
 
-  private handleServerQuestion(q: ChatQuestion) {
+  private handleServerQuestion(q: ChatQuestion): void {
     const match = Array.from(this.pendingClientQuestions.entries()).find(([, orig]) => {
       return orig.content === q.content && orig.senderId === q.senderId && orig.timestamp === q.timestamp;
     });
@@ -63,7 +55,7 @@ export class ChatStateService {
     this.syncQuestionsSignal();
   }
 
-  private handleServerAnswer(a: ChatAnswer) {
+  private handleServerAnswer(a: ChatAnswer): void {
     const question = this.questionsById.get(a.questionId);
     if (question) {
       const updatedQuestion = {
@@ -75,7 +67,7 @@ export class ChatStateService {
     }
   }
 
-  private syncQuestionsSignal() {
+  private syncQuestionsSignal(): void {
     const allQuestions = Array.from(this.questionsById.values());
     allQuestions.sort((a, b) => b.timestamp - a.timestamp);
     this.questions.set(allQuestions);

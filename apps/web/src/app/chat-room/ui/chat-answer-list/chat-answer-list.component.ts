@@ -11,7 +11,5 @@ import { ChatAnswerComponent } from '../chat-answer/chat-answer.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatAnswerListComponent {
-
   answers = input.required<ChatAnswer[]>()
-
 }

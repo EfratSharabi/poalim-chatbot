@@ -14,7 +14,7 @@ import { ChatModule } from './chat/chat.module';
     }),
     EventEmitterModule.forRoot(),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'web', 'browser'),
+      rootPath: join(__dirname, 'web', 'browser'),
     }),
     ChatModule
   ],

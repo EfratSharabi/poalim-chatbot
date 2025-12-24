@@ -23,7 +23,7 @@ async function bootstrap() {
   app.setBaseViewsDir(publicPath);
 
   // Use Express types for req/res
-  app.getHttpAdapter().get('*', (req: Request, res: Response) => {
+  app.getHttpAdapter().get('/:path(.*)', (req: Request, res: Response) => {
     res.sendFile(join(publicPath, 'index.html'));
   });
 

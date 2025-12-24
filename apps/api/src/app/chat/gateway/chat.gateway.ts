@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
   OnGatewayConnection,
@@ -7,14 +8,13 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { ChatEvent, ChatMessage, ChatPayload } from '@poalim-chatbot/shared';
+import { ChatPayload } from '@poalim-chatbot/shared';
 import { Server, Socket } from 'socket.io';
-import { CHAT_EVENT, ChatService } from '../services/chat.service';
 import { ChatEventPayload } from '../models/chat-event-payload.model';
-import { Logger } from '@nestjs/common';
+import { CHAT_EVENT, ChatService } from '../services/chat.service';
 
 @WebSocketGateway({
-  cors: { origin: 'http://localhost:4200' },
+  cors: { origin: process.env.FRONTEND_URL },
 })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {

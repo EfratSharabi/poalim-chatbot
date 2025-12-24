@@ -1,82 +1,111 @@
-# NxWorkspace
+# Bank Hapoalim Chat Bot
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+## **Overview**
+This is a **Single Page Application (SPA)** implementing a real-time chat room.  
+- Users can post questions and answers.  
+- A friendly and cheerful bot automatically answers questions that have already been asked, providing a human-like and entertaining response.  
+- Built on **NX Workspace** with Angular 21 for the frontend and NestJS 11 for the backend.  
+- The `shared` library is used to share models between frontend and backend.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+---
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## **Architecture**
 
-## Finish your remote caching setup
+### **Frontend (Angular 21)**
+- Uses **Standalone Components** and **Signals** instead of ZoneJS for improved performance.
+- Modular component structure:
+  - **ChatRoomComponent** – main chat feature.
+  - **ChatQuestionComposerComponent** – question creation.
+  - **ChatQuestionListComponent** – displays list of questions.
+  - **ChatQuestionComponent** – displays a single question using MatExpansionPanel.
+  - **ChatAnswerListComponent** – displays answers.
+  - **ChatAnswerComposerComponent** – answer creation.
+  - **ChatMessageEditorComponent** – rich HTML editor using ngx-editor.
+  - **ChatMessageComponent** – message display with header (sender, timestamp).
+- **Pipes**:
+  - `MessageTimestampFormatPipe` – formats timestamps.
+  - `MessageSenderFormatPipe` – formats sender info.
+- **State Management**:
+  - `ChatStateService` – stores questions and answers.
+  - `ChatActivityStateService` – manages pending answers state.
+  - `ChatSocketService` – handles bi-directional WebSocket communication.
+  - `ChatActionService` – sends actions to the backend.
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/RAphZNdLA8)
+### **Backend (NestJS 11)**
+- **ChatGateway** – handles WebSocket communication using `socket.io`.  
+- **Stores**:
+  - `ChatStore` – stores questions and answers.
+  - `EmbeddingStore` – stores embeddings for semantic search.
+- **Services / Business Logic**:
+  - `ChatService` – main chat logic, emits events via EventEmitter.
+  - `BotService` – handles bot responses.
+  - `PromptBuilderService` – builds prompts for OpenAI.
+  - `QuestionMatcherService` – identifies repeated questions.
+  - `VectorSimilarityService` – calculates semantic similarity between questions.
+  - `ChatBootstrapService` – initializes in-memory cache from JSON mock file.
+- **Dependency Injection with Provider Tokens**:
+  - `ILanguageModelService`, `IEmbeddingService` – allows future replacement without changing code dependencies.
 
+---
 
-## Run tasks
+## **Real-Time Synchronization**
+- Uses `socket.io` and WebSocket.
+- Defined events:
+  - `chatHistory`, `newQuestion`, `newAnswer`, `answerPending`.
+- **Flow example**:
+  1. Client sends a question with `correlationId`.
+  2. Server stores the question and returns a real ID.
+  3. `ChatService` emits an event via EventEmitter.
+  4. `ChatGateway` broadcasts the new question to all clients.
+- Pending answers provide typing feedback for other users or the bot.
 
-To run the dev server for your app, use:
+---
 
-```sh
-npx nx serve nx-workspace
-```
+## **Bot Implementation**
+- **Repeated question detection**: 
+  - HuggingFace embeddings are generated for each question.
+  - Semantic search is performed via vector comparison using the `VectorSimilarityService`.
+- **User-friendly answer generation**: 
+  - If a matching question is found, the bot calls the OpenAI language service to generate a friendly and helpful response.
+  - The prompt instructs the model: *"You are a helpful, friendly, and cheerful banking assistant"*.
+- **Process**:
+  1. `QuestionMatcherService` checks if the question has already been asked.
+  2. If a suitable match is found, `BotService` calls OpenAI to generate the answer.
+  3. The `correlationId` ensures the answer is correctly mapped in the UI.
+- Unique feature: the bot provides humorous and engaging responses, creating an enjoyable user experience.
 
-To create a production bundle:
+---
 
-```sh
-npx nx build nx-workspace
-```
+## **Performance Considerations**
+- Lazy loading of components.
+- Angular Signals instead of ZoneJS – reduced re-renders.
+- OnPush change detection where needed.
+- `correlationId` ensures fast and smooth UI updates.
+- Caching of previously answered questions.
 
-To see all available targets to run for a project, run:
+---
 
-```sh
-npx nx show project nx-workspace
-```
+## **Features**
+- Rich question and answer editor using ngx-editor.
+- Real-time typing feedback (`answerPending`).
+- Auto-opening of newly created questions.
+- Material Angular with custom theme.
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+---
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## **Code Testing**
+- Unit tests implemented only for `ChatStateService` in Angular.
+- Testing framework: **Vitest**.
 
-## Add new projects
+---
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/angular:app demo
-```
-
-To generate a new library, use:
-
-```sh
-npx nx g @nx/angular:lib mylib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## **Deployment**
+- Application deployed on **Render**.
+- Local setup:
+```bash
+# Install dependencies
+npm install
+# Start backend
+nx serve api
+# Start frontend
+nx serve web

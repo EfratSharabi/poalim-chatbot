@@ -35,7 +35,7 @@ COPY apps/api ./apps/api
 COPY libs ./libs
 
 # Copy Angular build into Nest public folder
-COPY --from=angular-build /app/dist/apps/web ./apps/api/public
+COPY --from=angular-build /app/dist/apps/web ./dist/public
 
 # Build Nest app using NX production configuration
 RUN npx nx build api --configuration=production

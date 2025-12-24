@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
@@ -15,6 +15,12 @@ import { ChatAnswerListComponent } from '../chat-answer-list/chat-answer-list.co
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatQuestionComponent {
+
   question = input.required<ChatQuestion>();
+  expanded = input<boolean>(false);
+
+  opened = output<void>();
+  closed = output<void>();
+  
   answersCountIcon = faCommentAlt;
 }

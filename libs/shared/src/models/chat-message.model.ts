@@ -4,4 +4,5 @@ export interface ChatMessage {
   senderId: string;
   timestamp: number;
   isBot?: boolean;
+  correlationId?: string;
 }

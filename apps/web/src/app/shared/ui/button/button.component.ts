@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, output, Output } from '@angular/core';
 import { MatButtonAppearance, MatButtonModule } from '@angular/material/button';
 
 @Component({
@@ -16,7 +16,7 @@ export class ButtonComponent {
   @Input() disabled = false;
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
 
-  @Output() clicked = new EventEmitter<MouseEvent>();
+  clicked = output<MouseEvent>();
 
   handleClick(event: MouseEvent): void {
     if (this.disabled) {

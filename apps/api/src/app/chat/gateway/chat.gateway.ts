@@ -10,12 +10,15 @@ import {
 import { ChatEvent, ChatMessage, ChatPayload } from '@poalim-chatbot/shared';
 import { Server, Socket } from 'socket.io';
 import { CHAT_EVENT, ChatService } from '../services/chat.service';
+import { ChatEventPayload } from '../models/chat-event-payload.model';
+import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: { origin: 'http://localhost:4200' },
 })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+    private readonly logger = new Logger(ChatGateway.name);
 
   @WebSocketServer()
   server: Server;
@@ -23,24 +26,24 @@ export class ChatGateway
   constructor(private readonly chatService: ChatService) { }
 
   afterInit(server: Server): void {
-    console.log('WebSocket server initialized');
+    this.logger.log('WebSocket server initialized');
   }
 
   handleConnection(client: Socket): void {
-    console.log(`Client connected: ${client.id}`);
+    this.logger.log(`Client connected: ${client.id}`);
     const history = this.chatService.getChatHistory();
     client.emit('chatHistory', history);
   }
 
   handleDisconnect(client: Socket): void {
-    console.log(`Client disconnected: ${client.id}`);
+    this.logger.log(`Client disconnected: ${client.id}`);
   }
 
   @SubscribeMessage('sendMessage')
   handleMessage(client: Socket, payload: ChatPayload): void {
-    console.log(`client sent action: ${payload?.action}`);
+    this.logger.log(`client sent action: ${payload?.action}`);
     if (!payload?.action) {
-      console.warn('Invalid payload:', payload);
+      this.logger.warn('Invalid payload:', payload);
       return;
     }
 
@@ -48,7 +51,7 @@ export class ChatGateway
   }
 
   @OnEvent(CHAT_EVENT)
-  handleChatEvent({ event, payload }: { event: ChatEvent; payload: ChatMessage }): void {
+  handleChatEvent<T>({ event, payload }: ChatEventPayload<T>): void {
     this.server.emit(event, payload);
   }
 }

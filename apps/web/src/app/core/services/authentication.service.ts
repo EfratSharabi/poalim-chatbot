@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class AuthenticationService {
 
-    users = ['Sara', 'John', 'Alice', 'Bob', 'Eve', 'Charlie', 'David', 'Faythe', 'Grace', 'Heidi'];
+    private readonly users = ['Sara', 'John', 'Alice', 'Bob', 'Eve', 'Charlie', 'David', 'Faythe', 'Grace', 'Heidi'];
 
     readonly currentUserId = this.randomUserId();
 

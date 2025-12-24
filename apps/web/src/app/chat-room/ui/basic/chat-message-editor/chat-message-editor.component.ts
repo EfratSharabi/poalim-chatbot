@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, EventEmitter, input, model, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, model, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { FormValueControl } from '@angular/forms/signals';
@@ -21,15 +21,13 @@ import { Editor, NgxEditorModule } from 'ngx-editor';
 })
 export class ChatMessageEditorComponent implements FormValueControl<string> {
 
-  /** The current input value */
   value = model('');
 
-  // @Input() diableSubmitButton: Signal<boolean> = signal<boolean>(false);
   diableSubmit = input(false);
   placeholder = input('What whould you like to say?');
 
-  @Output() send = new EventEmitter<string>();
-  @Output() cancel = new EventEmitter<string>();
+  send = output<string>();
+  cancel = output<void>();
 
   editor!: Editor;
 

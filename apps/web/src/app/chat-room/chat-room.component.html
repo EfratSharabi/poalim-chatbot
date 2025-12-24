@@ -1,4 +1,4 @@
 <div class="chat-room">
-    <app-chat-question-composer></app-chat-question-composer>
-    <app-chat-question-list [questions]="questions"></app-chat-question-list>
+    <app-chat-question-composer (created)="onCreateQuestion($event)"></app-chat-question-composer>
+    <app-chat-question-list [questions]="questions" [expanded]="expanded"></app-chat-question-list>
 </div>

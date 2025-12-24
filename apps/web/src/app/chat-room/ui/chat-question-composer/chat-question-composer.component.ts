@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { Field, form, required } from '@angular/forms/signals';
 import { TranslateModule } from '@ngx-translate/core';
 import { ChatQuestion } from '@poalim-chatbot/shared';
+import { nanoid } from 'nanoid';
 import { AuthenticationService } from '../../../core/services/authentication.service';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
 import { CardComponent } from '../../../shared/ui/card/card.component';
@@ -24,6 +25,8 @@ import { ChatMessageEditorComponent } from '../basic/chat-message-editor/chat-me
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatQuestionComposerComponent {
+
+  created = output<string>();
 
   isEditorOpen = signal<boolean>(false);
 
@@ -49,9 +52,11 @@ export class ChatQuestionComposerComponent {
       content: this.questionForm.content().value(),
       senderId: this.authenticationService.currentUserId,
       timestamp: Date.now(),
-      answers: []
+      answers: [],
+      correlationId: nanoid()
     }
     this.chatActionService.sendQuestion(question);
+    this.created.emit(question.correlationId!)
     this.reset();
   }
 

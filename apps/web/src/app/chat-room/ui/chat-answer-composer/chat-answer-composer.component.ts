@@ -24,6 +24,7 @@ export class ChatAnswerComposerComponent {
 
   onOpenEditor(): void {
     this.isEditorOpen.set(true);
+    this.notifyAnswerPending('on');
   }
 
   onSendAnswer($event: string): void {
@@ -35,10 +36,25 @@ export class ChatAnswerComposerComponent {
       questionId: this.questionId
     }
     this.chatActionService.sendAnswer(answer);
-    this.isEditorOpen.set(false);
+    this.onCloseAnswer();
+
   }
 
   onCancelAnswer(): void {
+    this.onCloseAnswer();
+  }
+
+  private onCloseAnswer(): void {
     this.isEditorOpen.set(false);
+    this.notifyAnswerPending('off');
+  }
+
+  private notifyAnswerPending(mode: 'on' | 'off'): void {
+    const answerPending = {
+      senderId: this.authenticationService.currentUserId,
+      questionId: this.questionId,
+      mode
+    }
+    this.chatActionService.notifyAnswerPending(answerPending);
   }
 }

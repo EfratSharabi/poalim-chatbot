@@ -2,9 +2,10 @@ import { inject, Injectable, signal } from '@angular/core';
 import { ChatAnswer, ChatQuestion } from '@poalim-chatbot/shared';
 import { NotificationService } from '../../shared/services/notification.service';
 import { ChatSocketService } from './chat-socket.service';
+import { nanoid } from 'nanoid';
 
-@Injectable({ 
-  providedIn: 'root' 
+@Injectable({
+  providedIn: 'root'
 })
 export class ChatStateService {
 
@@ -32,13 +33,16 @@ export class ChatStateService {
 
   private initHistory(msgs: ChatQuestion[]): void {
     this.questionsById.clear();
-    msgs.forEach((q) => this.questionsById.set(q.id, q));
+    msgs
+      .map(q => this.ensureCorrelationId(q))
+      .forEach((q) => this.questionsById.set(q.id, q));
     this.syncQuestionsSignal();
   }
 
   private handleServerQuestion(q: ChatQuestion): void {
+    q = this.ensureCorrelationId(q);
     const match = Array.from(this.pendingClientQuestions.entries()).find(([, orig]) => {
-      return orig.content === q.content && orig.senderId === q.senderId && orig.timestamp === q.timestamp;
+      return orig.correlationId === q.correlationId;
     });
 
     if (match) {
@@ -71,5 +75,12 @@ export class ChatStateService {
     const allQuestions = Array.from(this.questionsById.values());
     allQuestions.sort((a, b) => b.timestamp - a.timestamp);
     this.questions.set(allQuestions);
+  }
+
+  private ensureCorrelationId(q: ChatQuestion): ChatQuestion {
+    return {
+      ...q,
+      correlationId: q.correlationId ?? nanoid()
+    };
   }
 }

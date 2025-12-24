@@ -1,5 +1,9 @@
 <div class="chat-question-list">
-    @for (question of questions(); track question.id) {
-    <app-chat-question [question]="question"></app-chat-question>
+    @for (question of questions(); track question.correlationId) {
+        <app-chat-question [question]="question"
+                           [expanded]="isExpanded(question)"
+                           (opened)="onOpened(question)"
+                           (closed)="onClosed(question)">
+        </app-chat-question>
     }
 </div>

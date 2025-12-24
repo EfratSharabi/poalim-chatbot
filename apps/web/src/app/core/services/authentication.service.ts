@@ -11,6 +11,8 @@ export class AuthenticationService {
 
     private randomUserId(): string {
         const idx = Math.floor(Math.random() * this.users.length);
-        return this.users[idx];
+        const user = this.users[idx];
+        console.log(user);
+        return user;
     }
 }

@@ -38,7 +38,6 @@ export class ChatService {
   }
 
   private async createQuestion(q: Omit<ChatQuestion, 'answers'> & { answers?: ChatAnswer[] }): Promise<void> {
-    debugger
     const question = this.buildQuestion(q);
     this.chatStore.addQuestion(question);
     this.emitEvent(ChatEvent.NEW_QUESTION, question);

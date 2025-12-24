@@ -74,7 +74,14 @@
     "test": {
       "executor": "@angular/build:unit-test",
       "options": {
-        "include": ["**/chat-state.service.spec.ts"]
+        "include": [
+          "**/chat-state.service.spec.ts"
+        ],
+        "coverage": true,
+        "coverageReporters": [
+          "html",
+          "lcov"
+        ]
       }
     },
     "serve-static": {

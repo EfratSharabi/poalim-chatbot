@@ -3,23 +3,21 @@
 # =========================
 FROM node:24 AS angular-build
 
-# Set working directory
 WORKDIR /app
 
-# Copy root-level package files and NX config
-COPY package.json package-lock.json nx.json ./
-COPY tsconfig.base.json ./
+# Copy root-level files
+COPY package.json package-lock.json nx.json tsconfig.base.json ./
 
-# Install dependencies
+# Install all dependencies (needed for NX CLI)
 RUN npm install
 
-# Copy Angular source code and shared libraries
+# Copy Angular source and shared libs
 COPY apps/web ./apps/web
 COPY libs ./libs
 
 # Build Angular app using NX production configuration
 RUN npx nx build web --configuration=production
-# The output will be in dist/apps/web
+# Output: dist/apps/web
 
 # =========================
 # Stage 2: Build Nest App
@@ -28,21 +26,20 @@ FROM node:24 AS nest-build
 
 WORKDIR /app
 
-# Copy root-level package files and install production dependencies
-COPY package.json package-lock.json nx.json ./
-RUN npm install --production
+# Copy root files and install all dependencies (NX CLI is needed)
+COPY package.json package-lock.json nx.json tsconfig.base.json ./
+RUN npm install
 
-# Copy Nest source code and shared libraries
+# Copy Nest source code and shared libs
 COPY apps/api ./apps/api
 COPY libs ./libs
 
-# Copy Angular build from previous stage into Nest public folder
-# This allows Nest to serve the Angular frontend
+# Copy Angular build into Nest public folder
 COPY --from=angular-build /app/dist/apps/web ./apps/api/public
 
 # Build Nest app using NX production configuration
 RUN npx nx build api --configuration=production
-# The output will be in dist/apps/api
+# Output: dist/apps/api
 
 # =========================
 # Stage 3: Runtime Image
@@ -51,14 +48,14 @@ FROM node:24-alpine AS runtime
 
 WORKDIR /app
 
-# Copy built Nest app from previous stage
+# Copy built Nest app
 COPY --from=nest-build /app/dist/apps/api ./dist
 
-# Copy package files and install production dependencies
+# Copy package files and install production dependencies only
 COPY package.json package-lock.json ./
 RUN npm install --production
 
-# Expose port for Nest server
+# Expose Nest server port
 EXPOSE 3333
 
 # Start Nest server

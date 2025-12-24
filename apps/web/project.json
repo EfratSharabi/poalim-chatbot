@@ -73,7 +73,9 @@
     },
     "test": {
       "executor": "@angular/build:unit-test",
-      "options": {}
+      "options": {
+        "include": ["**/chat-state.service.spec.ts"]
+      }
     },
     "serve-static": {
       "continuous": true,

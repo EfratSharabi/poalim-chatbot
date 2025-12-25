@@ -100,7 +100,13 @@ This is a **Single Page Application (SPA)** implementing a real-time chat room.
 ---
 
 ## **Deployment**
-- Application deployed on **Render**.
+The application is deployed across two platforms:
+- **Backend**: Hosted on Render.
+- **Frontend**: Hosted on Netlify.
+
+**Live application:**  
+https://polite-praline-8a857f.netlify.app/
+
 - Local setup:
 ```bash
 # Install dependencies
